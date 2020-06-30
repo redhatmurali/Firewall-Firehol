@@ -1,7 +1,6 @@
 https://firehol.org/
 
 # Firewall config
-version 5
 
 ALLOWED_SSH_IPS="192.168.1.0/24 1.2.3.4"
 DNS_SERVERS="192.168.1.1 8.8.8.8"
@@ -31,7 +30,7 @@ interface eth0 wan
     
     ############################################
     
-    version 5
+  
 FIREHOL_LOG_PREFIX="firehol: "
 
 ...
