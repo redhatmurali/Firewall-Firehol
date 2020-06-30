@@ -1,7 +1,8 @@
 Install the whole firehol suite
+
 This is the script you will need to install the latest versions of firehol (all tools: firehol, fireqos, update-ipsets, link-balancer, vnetbuild), iprange and netdata, on any Linux system.
 
-build environment
+Build environment
 
 yum update wget
 yum install Judy-devel libuv-devel
@@ -11,21 +12,21 @@ yum install Judy-devel libuv cmake json-devel autoconf-archive autogen json-c-de
 
 wget https://raw.githubusercontent.com/firehol/netdata-demo-site/master/install-all-firehol.sh
 
+Basic Configure
 
 
 
 
+Instalaltion of vestacp
+
+# Download installation script
+curl -O http://vestacp.com/pub/vst-install.sh
+# Run it
+bash vst-install.sh --nginx yes --apache yes --phpfpm no --named yes --remi yes --vsftpd yes --proftpd no --iptables no --fail2ban no --quota no --exim yes --dovecot yes --spamassassin yes --clamav yes --softaculous yes --mysql yes --postgresql no --hostname web.100ports..com --email redhat.murali@gmail.com --password Hello.123#
 
 
 
 
-
-https://firehol.org/
-Firehol is a BASH script that makes it easy to handle iptables
-
-Instalaltion
-https://fedoraproject.org/wiki/EPEL
-yum install firehol
 
 ###############################
 Allowing pings and HTTP/HTTPS from anywhere, a custom port tcp/6543, custom udp ports from 1200 to 1230
