@@ -4,6 +4,7 @@ This is the script you will need to install the latest versions of firehol (all 
 build environment
 
 yum update wget
+yum install Judy-devel libuv-devel
 yum install autoconf automake curl gcc git libmnl-devel libuuid-devel openssl-devel libuv-devel lz4-devel Judy-devel make nc pkgconfig python zlib-develnn -y
 yum install zlib-devel libuuid-devel libmnl-devel gcc make git autoconf autogen automake pkgconfig traceroute ipset curl nodejs zip unzip jq ulogd
 yum install Judy-devel libuv cmake json-devel autoconf-archive autogen json-c-devel libmnl-devel libuv-devel lz4-devel nmap-ncat openssl-devel python3 git zlib-devel libuuid-devel libmnl gcc make git autoconf automake pkgconfig curl findutils
