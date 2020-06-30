@@ -1,3 +1,4 @@
+@@@@@@@@@@@@@@@@@@SIMPLE INSTALALTION @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 Install the whole firehol suite
 
 This is the script you will need to install the latest versions of firehol (all tools: firehol, fireqos, update-ipsets, link-balancer, vnetbuild), iprange and netdata, on any Linux system.
@@ -12,10 +13,28 @@ yum install Judy-devel libuv cmake json-devel autoconf-archive autogen json-c-de
 
 wget https://raw.githubusercontent.com/firehol/netdata-demo-site/master/install-all-firehol.sh
 
-Basic Configure
+cd /etc/firehol/
+cp firehol.conf.example firehol.conf
+cp fireqos.conf.example fireqos.conf
 
+vi fireqos.conf
 
+Modify Ethernet
 
+firehol start
+fireqos start
+
+vi firehol.conf
+
+interface ens33 wan
+    # Incoming:
+    server "http https" accept
+    server ping accept
+    server "icmp ping ICMP ssh" accept
+    server custom netdata tcp/19999 default accept
+    server custom yourAppNameOrAnything tcp/8083 default accept
+    protection strong
+    client all accept
 
 Instalaltion of vestacp
 
@@ -24,7 +43,7 @@ curl -O http://vestacp.com/pub/vst-install.sh
 # Run it
 bash vst-install.sh --nginx yes --apache yes --phpfpm no --named yes --remi yes --vsftpd yes --proftpd no --iptables no --fail2ban no --quota no --exim yes --dovecot yes --spamassassin yes --clamav yes --softaculous yes --mysql yes --postgresql no --hostname web.100ports..com --email redhat.murali@gmail.com --password Hello.123#
 
-
+@@@@@@@@@@@@@@@@@@SIMPLE INSTALALTION@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 
 
@@ -153,7 +172,10 @@ for country in $COUNTRIES; do
 done
 
 #######################################
-        server imap accept src ipset:countries
+server imap accept src ipset:countries
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 Install the whole firehol suite
 
