@@ -1,1 +1,138 @@
 https://firehol.org/
+
+# Firewall config
+version 5
+
+ALLOWED_SSH_IPS="192.168.1.0/24 1.2.3.4"
+DNS_SERVERS="192.168.1.1 8.8.8.8"
+
+# Redirect port 1234 to 1111
+redirect to 1111 inface eth0 proto tcp dport 1234
+
+interface eth0 wan
+    # Incoming:
+    server ssh accept src "$ALLOWED_SSH_IPS"
+    server "http https" accept
+    server ping accept
+    server custom yourAppNameOrAnything tcp/6543 default accept
+    server custom anotherExample udp/1200:1230 default accept src "192.168.67.2 192.168.6.5"
+
+    # Outgoing:
+    client ping accept
+    client dns accept dst "$DNS_SERVERS"
+    # Allow root to access anything:
+    client all accept user "root"
+
+    # No other outgoing connections are allowed if they aren't mentioned. 
+    # To allow all outgoing connections, use:
+    # client all accept
+    
+    
+    
+    ############################################
+    
+    version 5
+FIREHOL_LOG_PREFIX="firehol: "
+
+...
+whole_network="10.40.0.0/16"
+it_admin_ips="1.2.3.4 2.3.4.5"
+redirect to 3128 inface eth0 src "$whole_network" proto tcp dport 80
+
+interface eth0 lan
+    server ssh accept src "$it_admin_ips"
+    server ping accept
+    client all accept
+
+interface eth1 internet
+    protection strong
+    client all accept
+
+router lan2internet inface eth0 outface eth1
+    masquerade
+    route imap accept
+    route pop3 accept
+    route smtp accept
+    route all accept src "$it_admin_ips"
+    
+    
+    ######################################################
+    :msg, startswith, "firehol: " -/var/log/firewall.log
+& ~
+###############
+FIREHOL_LOG_PREFIX="firehol: "
+
+######################
+/var/log/firewall.log
+{
+    sharedscripts
+    compress
+    postrotate
+        /bin/kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true
+    endscript
+}
+##########################
+# Drop these explicitly as we get lots of logs
+server netbios_dgm drop
+server netbios_ns drop
+# If you have a static IP and not a DHCP one:
+server dhcp drop
+server custom udp68 udp/68 any drop
+server custom udp69 udp/69 any drop
+# etc
+############################
+# usage example:
+# allow_domain 'domainname.com another.domain.com' 'client http accept dst'
+function allow_domain() {
+        local domains="$1"
+        local firehol_line="$2"
+
+        for domain in ${domains}; do
+                while read ip; do
+                        if echo $ip | grep -Eq '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$'; then
+                                $firehol_line "$ip"
+                        fi
+                done < <(dig ${domain} +short +tries=1 +time=3)
+        done
+}
+#################################
+allow_domain 'db.us.clamav.net' 'client http accept dst'
+allow_domain 'nagios.rizvir.com' 'client custom tcp/3667 default accept"
+#############################
+Allowing or blocking countries
+ipv4 ipset create countries hash:net
+COUNTRIES="ae au"
+IPSET_SRC_DST_OPTIONS=
+for country in $COUNTRIES; do
+        #url="http://www.ipdeny.com/ipblocks/data/aggregated/${country}-aggregated.zone" #site down?
+        url="http://ipverse.net/ipblocks/data/countries/${country}.zone"
+        country_ips=$(curl -s $url)
+        if [ $? != 0 ]; then
+                echo "Error downloading country IP list from $url"
+                server countrylist deny # force firehol to error out
+        fi
+        # Make sure that the entry is an IP, or error out
+        while read ip; do
+                if [[ "$ip" =~ ^#.* ]]; then
+                        continue
+                fi
+                if ! [[ "$ip" =~ ^[0-9].*\/.* ]]; then
+                        echo "Country zone had a line with no network address: $ip"
+                        server countrylist deny # force firehol to error out
+                else
+                        ipv4 ipset add countries "$ip"
+                fi
+        done <<< "$country_ips"
+done
+
+#######################################
+        server imap accept src ipset:countries
+
+
+
+
+
+
+
+
+    
