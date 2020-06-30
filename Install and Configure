@@ -1,7 +1,15 @@
 https://firehol.org/
+Firehol is a BASH script that makes it easy to handle iptables
+
+Instalaltion
+https://fedoraproject.org/wiki/EPEL
+yum install firehol
+
+###############################
+Allowing pings and HTTP/HTTPS from anywhere, a custom port tcp/6543, custom udp ports from 1200 to 1230
+SSH from some IPs, and restrict outgoing connections but still allow yum updates by root
 
 # Firewall config
-
 ALLOWED_SSH_IPS="192.168.1.0/24 1.2.3.4"
 DNS_SERVERS="192.168.1.1 8.8.8.8"
 
@@ -25,10 +33,7 @@ interface eth0 wan
     # No other outgoing connections are allowed if they aren't mentioned. 
     # To allow all outgoing connections, use:
     # client all accept
-    
-    
-    
-    ############################################
+############################################
     
   
 FIREHOL_LOG_PREFIX="firehol: "
@@ -53,9 +58,9 @@ router lan2internet inface eth0 outface eth1
     route pop3 accept
     route smtp accept
     route all accept src "$it_admin_ips"
-    
-    
-    ######################################################
+  
+  
+######################################################
     :msg, startswith, "firehol: " -/var/log/firewall.log
 & ~
 ###############
