@@ -1,3 +1,24 @@
+Install the whole firehol suite
+This is the script you will need to install the latest versions of firehol (all tools: firehol, fireqos, update-ipsets, link-balancer, vnetbuild), iprange and netdata, on any Linux system.
+
+build environment
+
+yum update wget
+yum install autoconf automake curl gcc git libmnl-devel libuuid-devel openssl-devel libuv-devel lz4-devel Judy-devel make nc pkgconfig python zlib-develnn -y
+yum install zlib-devel libuuid-devel libmnl-devel gcc make git autoconf autogen automake pkgconfig traceroute ipset curl nodejs zip unzip jq ulogd
+yum install Judy-devel libuv cmake json-devel autoconf-archive autogen json-c-devel libmnl-devel libuv-devel lz4-devel nmap-ncat openssl-devel python3 git zlib-devel libuuid-devel libmnl gcc make git autoconf automake pkgconfig curl findutils
+
+wget https://raw.githubusercontent.com/firehol/netdata-demo-site/master/install-all-firehol.sh
+
+
+
+
+
+
+
+
+
+
 https://firehol.org/
 Firehol is a BASH script that makes it easy to handle iptables
 
