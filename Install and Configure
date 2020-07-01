@@ -132,8 +132,14 @@ server:
   timeout: 1            # optional
   update_every: 1       # optional
   
- @@@@@@@@@@@@@@@@@@@@@@@@@@
-
+ @@@@@@@@@@@@@@@@@@@@@@@@@@ Exim emailserver @@@@@@@@@@@@@@@@@@@@@@@@@@@
+ 
+vi /etc/exim/exim.conf
+add below line 
+queue_list_requires_admin = false
+restart exim 
+ systemctl restart netdata
+ @@@@@@@@@@@@@@@@@@@@@@@@ 
 
 
 
