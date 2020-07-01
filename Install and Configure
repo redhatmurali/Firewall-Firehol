@@ -122,7 +122,18 @@ Create new file with below URL
 
 
 
-@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@Port Check server@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+./edit-config python.d/portcheck.conf
+ 
+server:
+  host: '8.8.8.8'     # required
+  port: 22              # required
+  timeout: 1            # optional
+  update_every: 1       # optional
+  
+ @@@@@@@@@@@@@@@@@@@@@@@@@@
+
 
 
 
