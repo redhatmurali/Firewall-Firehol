@@ -93,9 +93,32 @@ synproxy4 in,pass \
         inface "${PUBLIC_DEVS}" dst "${PUBLIC_IPS}" \
         dport "${TRAP_PORTS}" action SYN_TRAP_AND_${TRAP_ACTION}
         
-@@@@@@@@@@@@@@@ DDOS ENABLE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@ Apache ENABLE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
+By default vestacp will be enabled just need to chage port on netdata apache.conf file to :8081
+vi /etc/httpd/conf.d/status.conf
 
+https://github.com/netdata/netdata/blob/master/collectors/python.d.plugin/apache/apache.conf
+
+vi /etc/netdata/python.d/apache.conf
+
+Manual Instalaltion 
+Verify mod_status enabled or not
+Check the module is enabled and presenet on below URL
+# vim /etc/httpd/conf.modules.d/00-base.conf
+Create new file with below URL 
+# vim /etc/httpd/conf.d/server-status.conf
+<Location "/server-status">
+    SetHandler server-status
+    #Require host localhost           #uncomment to only allow requests from localhost 
+</Location>
+
+# yum install lynx
+# lynx http://localhost:8081/server-status 
+
+# systemctl restart netdata 
+
+@@@@@@@@@@@@@@@@@
 
 
 
