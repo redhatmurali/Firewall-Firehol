@@ -139,8 +139,15 @@ add below line
 queue_list_requires_admin = false
 restart exim 
  systemctl restart netdata
- @@@@@@@@@@@@@@@@@@@@@@@@ 
+ @@@@@@@@@@@@@@@@@@@@@@@@  Mysql @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+yum install MySQL-python
+mysql
+create user 'netdata'@'localhost';
+grant usage on *.* to 'netdata'@'localhost';
+flush privileges;
 
+to verify the issue 
+grep mysql /var/log/netdata/error.log
 
 
 
