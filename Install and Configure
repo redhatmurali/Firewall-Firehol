@@ -43,7 +43,70 @@ curl -O http://vestacp.com/pub/vst-install.sh
 # Run it
 bash vst-install.sh --nginx yes --apache yes --phpfpm no --named yes --remi yes --vsftpd yes --proftpd no --iptables no --fail2ban no --quota no --exim yes --dovecot yes --spamassassin yes --clamav yes --softaculous yes --mysql yes --postgresql no --hostname web.100ports..com --email redhat.murali@gmail.com --password Hello.123#
 
-@@@@@@@@@@@@@@@@@@SIMPLE INSTALALTION@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@DDOS ENABLE@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+# your public IPs
+PUBLIC_IPS="192.168.88.198"
+
+# your public interfaces
+PUBLIC_DEVS="ens33"
+
+# trap TCP ports
+# ssh telnet netbios mssql squid mysql rdp vnc proxy
+TRAP_PORTS="22 23 137-139 1433 3128 3306 3389 5900 8080"
+
+# the time to keep track of suspects
+SUSPECTS_TIMEOUT=3600
+
+# the time to keep IPs in the trap
+TRAP_TIMEOUT=86400
+
+# how many connections you consider valid per IP?
+VALID_CONNECTION_COUNT=2
+
+# what to do with the packets on these ports?
+TRAP_ACTION="DROP"
+
+# create our whitelist
+ipset4 create whitelist hash:net
+ipset4 add whitelist "${UNROUTABLE_IPS}"
+#ipset4 add whitelist MY_WHITELIST_NET1
+#ipset4 add whitelist MY_WHITELIST_NET2
+
+# the action to do the magic
+action4 SYN_TRAP_AND_${TRAP_ACTION} \
+        iptrap sockets src,dst,dst ${SUSPECTS_TIMEOUT} \
+                method hash:ip,port,ip counters \
+                state NEW log "SYN TRAP AND ${TRAP_ACTION} NEW SOCKET" \
+                src not ipset:whitelist \
+        next iptrap suspects src ${SUSPECTS_TIMEOUT} counters \
+                state NEW log "SYN TRAP AND ${TRAP_ACTION} NEW SUSPECT" \
+                ipset sockets src,dst,dst no-counters packets 1 \
+        next iptrap trap src ${TRAP_TIMEOUT} \
+                state NEW log "SYN TRAP AND ${TRAP_ACTION} TRAPPED" \
+                ipset suspects src no-counters packets-above ${VALID_CONNECTION_COUNT} \
+        next action ${TRAP_ACTION}
+
+# The synproxy to handle the incoming connections
+# Put this ABOVE your dnats and redirects
+synproxy4 in,pass \
+        inface "${PUBLIC_DEVS}" dst "${PUBLIC_IPS}" \
+        dport "${TRAP_PORTS}" action SYN_TRAP_AND_${TRAP_ACTION}
+        
+@@@@@@@@@@@@@@@ DDOS ENABLE @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
